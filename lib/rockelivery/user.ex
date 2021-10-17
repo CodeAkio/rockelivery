@@ -6,7 +6,8 @@ defmodule Rockelivery.User do
   alias Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
-  @required_params [:name, :age, :cpf, :email, :password, :cep, :address]
+  @create_params [:name, :age, :cpf, :email, :password, :cep, :address]
+  @update_params @create_params -- [:password]
   @derive {Jason.Encoder, only: [:id, :name, :email, :age, :cpf, :address]}
 
   schema "users" do
@@ -24,8 +25,18 @@ defmodule Rockelivery.User do
 
   def changeset(params) do
     %__MODULE__{}
-    |> cast(params, @required_params)
-    |> validate_required(@required_params)
+    |> handle_changes(params, @create_params)
+  end
+
+  def changeset(struct, params) do
+    struct
+    |> handle_changes(params, @update_params)
+  end
+
+  defp handle_changes(changeset, params, fields) do
+    changeset
+    |> cast(params, fields)
+    |> validate_required(fields)
     |> validate_length(:password_hash, min: 6)
     |> validate_length(:cep, is: 8)
     |> validate_length(:cpf, is: 11)
