@@ -1,4 +1,4 @@
-defmodule Rockelivery.Controllers.UsersControllerTest do
+defmodule RockeliveryWeb.Controllers.UsersControllerTest do
   use RockeliveryWeb.ConnCase, async: true
 
   import Rockelivery.Factory
